@@ -4,6 +4,7 @@ import parseISO from 'date-fns/parseISO';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePlayer } from '../../contexts/PlayerContext';
 import { api } from '../../services/api';
 import { convertDurationToTimeString } from '../../utils/convertDurationToTimeString';
 import styles from './episode.module.scss';
@@ -27,7 +28,9 @@ type EpisodeProps = {
 
 export default function Episode({ episode }: EpisodeProps) {
 
-    return (
+  const { play } = usePlayer();
+
+  return (
         <div className={styles.episode}>
             <div className={styles.thumbnailContainer}>
                 <Link href="/">
@@ -42,7 +45,7 @@ export default function Episode({ episode }: EpisodeProps) {
                     src={episode.thumbnail}
                     objectFit="cover"
                 />
-                <button type="button">
+                <button type="button" onClick={() => play(episode)}>
                     <img src="/play.svg" alt="Tocar episódio" />
                 </button>
             </div>
@@ -56,14 +59,14 @@ export default function Episode({ episode }: EpisodeProps) {
 
             <div className={styles.description} dangerouslySetInnerHTML={{ __html: episode.description }}/>
         </div>
-    ) 
+  ) 
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    return {
-        paths: [],
-        fallback: 'blocking'
-    }
+  return {
+    paths: [],
+    fallback: 'blocking'
+  }
 }
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
